@@ -1,7 +1,11 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const express = require("express");
+const cors = require("cors");
+
 const app = express();
 require("dotenv").config();
+app.use(cors());
+app.use(express.json());
 
 const port = process.env.PORT || 5000;
 
@@ -19,6 +23,19 @@ async function run() {
   try {
     await client.connect();
 
+    // get database and create collection
+    const database = client.db("petNest");
+    const petCollection = database.collection("pets");
+
+    // pet post method
+    app.post("/pets", async (req, res) => {
+      const petData = req.body;
+
+      const result = await petCollection.insertOne(petData);
+
+      res.send(result);
+    });
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!",
@@ -31,7 +48,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-  res.send("Hello Word");
+  res.send("Hello Word!");
 });
 
 app.listen(port, () => {
