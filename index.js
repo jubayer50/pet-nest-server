@@ -27,6 +27,14 @@ async function run() {
     const database = client.db("petNest");
     const petCollection = database.collection("pets");
 
+    // pet get method
+    app.get("/pets", async (req, res) => {
+      const cursor = petCollection.find();
+      const result = await cursor.toArray();
+
+      res.send(result);
+    });
+
     // pet post method
     app.post("/pets", async (req, res) => {
       const petData = req.body;
