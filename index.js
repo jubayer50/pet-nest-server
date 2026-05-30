@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const cors = require("cors");
 
@@ -31,6 +31,17 @@ async function run() {
     app.get("/pets", async (req, res) => {
       const cursor = petCollection.find();
       const result = await cursor.toArray();
+
+      res.send(result);
+    });
+
+    // pet single get method
+    app.get("/pets/:id", async (req, res) => {
+      const { id } = req.params;
+
+      const query = { _id: new ObjectId(id) };
+
+      const result = await petCollection.findOne(query);
 
       res.send(result);
     });
