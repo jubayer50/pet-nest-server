@@ -36,6 +36,14 @@ async function run() {
       res.send(result);
     });
 
+    // get pet method for Featured Pets Section wilt 6 data using limit
+    app.get("/featured-pets", async (req, res) => {
+      const cursor = petCollection.find().limit(6);
+      const result = await cursor.toArray();
+
+      res.send(result);
+    });
+
     // pet single get method
     app.get("/pets/:id", async (req, res) => {
       const { id } = req.params;
