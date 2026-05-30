@@ -26,6 +26,7 @@ async function run() {
     // get database and create collection
     const database = client.db("petNest");
     const petCollection = database.collection("pets");
+    const petAdoptRequestCollection = database.collection("pets-adopt-request");
 
     // pet get method
     app.get("/pets", async (req, res) => {
@@ -51,6 +52,31 @@ async function run() {
       const petData = req.body;
 
       const result = await petCollection.insertOne(petData);
+
+      res.send(result);
+    });
+
+    // patch api for statues updata
+    app.patch("/pets/:id", async (req, res) => {
+      const { id } = req.params;
+
+      const filter = {
+        _id: new ObjectId(id),
+      };
+
+      const updataDoc = { $set: req.body };
+
+      const result = await petCollection.updateOne(filter, updataDoc);
+
+      res.send(result);
+    });
+
+    // ----------------------------------------------------------------------------------------------------
+    // adopt request
+    app.post("/pets-adopt-request", async (req, res) => {
+      const petRequestData = req.body;
+
+      const result = await petAdoptRequestCollection.insertOne(petRequestData);
 
       res.send(result);
     });
